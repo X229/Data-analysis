@@ -1,0 +1,77 @@
+#coding:utf-8
+#使用K-Means对图像进行聚类，并显示聚类压缩后的图像
+import numpy as np
+import PIL.Image as image
+from sklearn.cluster import KMeans
+from sklearn import preprocessing
+import matplotlib.image as mping
+
+#加载图像，并对数据进行规范化
+def load_data(filePath):
+    #读文件
+    f=open(filePath,'rb')
+    data=[]
+    #得到图像的像素值
+    img=image.open(f)
+    #得到图像尺寸
+    width,height=img.size
+    for x in range(width):
+        for y in range(height):
+        #得到点(x,y)的RGB通道三个值
+            c1,c2,c3,c4=img.getpixel((x,y))
+            data.append([c1,c2,c3])
+    f.close()
+    #采用Min-Max规范化
+    mm=preprocessing.MinMaxScaler()
+    data=mm.fit_transform(data)
+    return np.mat(data),width,height
+
+#加载图像，得到规范化的结果img，以及图像尺寸
+img,width,height=load_data('./weixin_mark.png')
+
+#用K-Means对图像进行2聚类
+kmeans=KMeans(n_clusters=2)
+kmeans.fit(img)
+label=kmeans.predict(img)
+#将图像聚类结果，转化成图像尺寸的矩阵
+label=label.reshape([width,height])
+#创建个新图像pic_mark，用来保存图像聚类的结果，并设置不同的灰度值
+pic_mark=image.new("L",(width,height))
+for x in range(width):
+    for y in range(height):
+        #根据类别设置图像灰度，类别0灰度值为255，类别1灰度值为127
+        pic_mark.putpixel((x,y),int(256/(label[x][y]+1))-1)
+pic_mark.save("weixin_mark.jpg","JPEG")
+
+'''
+理解python中对矩阵操作的思维模式
+2*4，指外层矩阵有两个元素，内层矩阵有4个元素
+例如([0,1,2,3],
+     [4,5,6,7])
+这个矩阵外层两个元素为[0,1,2,3]和[4,5,6,7]
+第一个外层矩阵的内层矩阵有0,1,2,3四个元素
+这样就能理解axis了
+之前将axis=0理解为纵向从上到下，axis=1理解为横向从左到右
+现在可以知道，axis=0指第一维度，也就是矩阵外层；axis=1指第二维度，也就是矩阵内层
+
+三维矩阵比较时，
+axis=0为第一维度(最外层)对应坐标点上值比较；
+axis=1为第二维度(次外层)对应坐标点上值比较；
+axis=2为第三维度(内层)对应坐标点上值比较。
+例如：
+([[[1, 2, 3], 
+   [3, 4, 5], 
+   [6, 7, 8]],
+   
+   [[6, 7, 8],
+    [3, 4, 5],
+    [1, 2, 3]],
+    
+   [[1, 2, 3], 
+    [6, 7, 8],
+    [3, 4, 5]]
+ ])
+axis=0时，1,6,1；2,7,2；3,8,3；3,3,6...比较
+axis=1时，1,3,6；2,4,7；3,5,8；6,3,1...比较
+axis=2时，1,2,3；3,4,5；6,7,8；6,7,8...比较
+'''

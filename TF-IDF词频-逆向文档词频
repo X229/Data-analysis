@@ -1,0 +1,20 @@
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+#创建TFidfVectorizer类
+tfidf_vec=TfidfVectorizer()
+
+#创建4个文档的列表documents，并拟合得到tf-idf矩阵
+documents=['this is the bayes document',
+           'this is the second second document',
+           'an the third one',
+           'is this the document']
+tfidf_matrix=tfidf_vec.fit_transform(documents)
+
+#输出文档中所有不重复的词
+print('不重复的词：',tfidf_vec.get_feature_names())
+
+#输出每个单词对应的id值
+print('每个单词的ID：',tfidf_vec.vocabulary_)
+
+#输出每个单词在每个文档中的TF-IDF值，向量里的顺序安装词语的id顺序
+print('每个单词的tf-idf值：',tfidf_matrix.toarray())
