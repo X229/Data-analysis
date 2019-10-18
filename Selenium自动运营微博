@@ -1,0 +1,82 @@
+from selenium import webdriver
+import time
+
+browser=webdriver.Chrome()
+#登录微博
+def weibo_login(username,password):
+	#打开微博登录页
+	browser.get('https://passport.weibo.cn/signin/login')
+	browser.implicitly_wait(5)
+	time.sleep(1)
+	#填写登录信息：用户名、密码
+	#browser.find_element_by_id('loginName').send_keys(username)
+	browser.find_element_by_xpath("/html/body/div[@id='loginWrapper']/form/section[@class='box']/div[@class='input-wrapper'][1]/p[@class='input-box']/input[@id='loginName']").send_keys(username)
+	#browser.find_element_by_id('loginPassword').send_keys(password)
+	browser.find_element_by_xpath("/html/body/div[@id='loginWrapper']/form/section[@class='box']/div[@class='input-wrapper'][2]/p[@class='input-box']/input[@id='loginPassword']").send_keys(password)
+	time.sleep(1)
+	#点击登录
+	#browser.find_element_by_id('loginAction').click()
+	browser.find_element_by_xpath("/html/body/div[@id='loginWrapper']/form/a[@id='loginAction']").click()
+	time.sleep(1)
+#设置用户名、密码
+username='*****'
+password='*****'
+weibo_login(username,password)
+
+#沈义人Brian UID
+uid='6561912289'
+
+#添加指定的用户
+def add_follow(uid):
+	browser.get('https://m.weibo.cn/profile/'+str(uid))
+	time.sleep(1)
+	#browser.find_element_by_id('follow').click()
+	browser.find_element_by_xpath("/html/body/div[@id='app']/div[1]/div[@class='profile-header lite-bot-line']/div[@class='prf-handle m-box']/div[@class='bar-btn m-box-col']/div[@class='m-add-box m-followBtn m-btn m-btn-block m-btn-blue']").click()
+	time.sleep(1)
+	#加入特别关注分组
+	browser.find_element_by_xpath("/html/body/div[@id='app']/div[1]/div[13]/div[@class='m-pop m-pop-lt']/section/ul[@class='gp-list']/li[1]/label[@class='m-checkbox']/span").click()
+	time.sleep(1)
+	browser.find_element_by_xpath("/html/body/div[@id='app']/div[1]/div[13]/div[@class='m-pop m-pop-lt']/footer[@class='m-btm-btns m-box']/div[@class='m-box-col'][2]/a[@class='m-btn m-btn-white m-btn-text-orange']").click()
+	time.sleep(1)
+add_follow(uid)
+
+#取消关注指定用户
+def out_follow(uid):
+	browser.get('https://m.weibo.cn/profile/'+str(uid))
+	time.sleep(1)
+	browser.find_element_by_xpath("/html/body/div[@id='app']/div[1]/div[@class='profile-header lite-bot-line']/div[@class='prf-handle m-box']/div[@class='bar-btn m-box-col']/a[@class='m-btn m-btn-block m-btn-lite-white']").click()
+	time.sleep(1)
+	browser.find_element_by_xpath("/html/body/div[@id='app']/div[2]/div[@class='mask-wrap']/div[@class='m-dialog']/footer[@class='m-btm-btns m-box']/div[@class='m-box-col'][2]/a[@class='m-btn m-btn-white m-btn-text-orange']").click()
+	time.sleep(1)
+out_follow(uid)
+
+#给指定某条微博添加内容
+def add_comment(weibo_url,content):
+	browser.get(weibo_url)
+	browser.implicitly_wait(5)
+	content_textarea=browser.find_element_by_xpath("/html/body/div[@id='app']/div[1]/div[@class='wb-item-wrap'][1]/div[@class='wb-item']/div[@class='card m-panel card9 f-weibo']/footer[@class='f-footer-ctrl']/div[@class='m-diy-btn m-box-center-a'][2]/i[@class='lite-iconf lite-iconf-comments']").click()
+	content_textarea = browser.find_element_by_xpath("/html/body/div[@id='app']/div[@class='lite-page-wrap']/div/div[@class='lite-page-editor']/div[@class='m-box']/div[@class='box-left m-box-col m-box-center-a']").clear()
+	content_textarea=browser.find_element_by_xpath("/html/body/div[@id='app']/div[@class='lite-page-wrap']/div/div[@class='lite-page-editor']/div[@class='m-box']/div[@class='box-left m-box-col m-box-center-a']").send_keys(content)
+	time.sleep(2)
+	comment_botton=browser.find_element_by_xpath("/html/body/div[@id='app']/div[@class='lite-page-wrap']/div/div[@class='lite-page-editor']/div/div[@class='composer-mini-wrap']/div[@class='flex-col focus']/div[@class='flex-row composer-mini-bar']/button[@class='btn-send']").click()
+	time.sleep(1)
+
+#发表文字微博
+def posot_weibo(content):
+	#跳转到用户首页
+	browser.get("https://m.weibo.cn/")
+	browser.implicitly_wait(5)
+	#点击右上角的发布按钮
+	post_button=browser.find_element_by_xpath("/html/body/div[@id='app']/div[@class='main-wrap']/div[@class='lite-topbar main-top']/div[@class='nav-top']/div[@class='nav-right']/div[@class='lite-iconf lite-iconf-releas']").click()
+	#在弹出的文本框内输入内容
+	content_textarea=browser.find_element_by_xpath("/html/body/div[@id='app']/div[@class='m-wrapper m-wbox']/div[@class='m-pos-f m-box-model m-main']/main[@class='m-reles-con m-lim-width m-box-model m-flex-shrink1 m-flex-grow1']/div[@class='m-box-model m-pos-r']/div[@class='m-box-model m-fd-row m-reles-nr']/span[@class='m-wz-def']/textarea[1]").send_keys(content)
+	time.sleep(2)
+	#点击发布按钮
+	post_button=browser.find_element_by_xpath("/html/body/div[@id='app']/div[@class='m-wrapper m-wbox']/div[@class='m-pos-f m-box-model m-main']/header[@class='m-box-model m-fd-row m-reles-top m-justify-bet m-aln-center m-lim-width']/div[@class='m-box m-flex-grow1 m-box-model m-fd-row m-aln-center m-justify-end m-flex-base0']/a[@class='m-send-btn']").click()
+	time.sleep(1)
+#给指定微博写评论
+weibo_url='https://m.weibo.cn/profile/6561912289'
+content='test'
+#自动发微博
+content='test'
+posot_weibo(content)
