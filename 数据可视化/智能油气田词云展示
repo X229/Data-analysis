@@ -1,0 +1,64 @@
+#-*-coding:utf-8-*-
+#网易云音乐 通过歌手ID，生成该歌手词云
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+import jieba
+from PIL import Image
+import numpy as np
+'''
+wc=WordCloud(
+	background_color='white',#设置背景颜色
+	mask=backgroud_Image,#设置背景图片
+	font_path='./SimHei.ttf',#设置字体，针对中文的情况需要设置中文字体，否则显示乱码
+	max_words=100,#最大的字数
+	stopwords=STOPWORDS,#设置停用词
+		max_font_size=150,#设置字体最大值
+		width=2000,#设置画布宽度
+		height=1200,#高度
+	random_state=30#设置多少种随机状态，即多少种颜色
+)
+'''
+
+#生产词云
+def create_word_cloud(f):
+	print('根据词频计算词云')
+	text=" ".join(jieba.cut(f,cut_all=False,HMM=True))
+	wc=WordCloud(
+		background_color='white',
+		font_path="./SimHei.ttf",
+		max_words=100,
+		width=2000,
+		height=1200)
+	wordcloud=wc.generate(text)
+	#写词云图片
+	wordcloud.to_file("wordcloud.jpg")
+	#显示词云
+	plt.imshow(wordcloud)
+	plt.axis('off')
+	plt.show()
+
+#去掉停用词
+def remove_stop_words(f):
+	stop_word=['技术','应用']
+	for stop_word in stop_word:
+		f=f.replace(stop_word,'')
+	return f
+
+f='智慧油气田建设方案及设想\
+智能油气田建设最佳实践\
+智能油气田云平台技术\
+人工智能在油气勘探开发中应用\
+海上无人智能油气田开发技术\
+智慧油气田生产与运行管控技术\
+智慧油气田信息化（优化技术、智能搜索技术、信息集成技术、ESB集成技术）建设\
+智慧油田信息技术\
+人工智能在油气勘探、开发中应用研究\
+人工智能和地理信息系统在石油勘探开发中集成应用\
+人工智能在勘测和地震数据分析领域\
+人工智能油气钻井、测井的中的应用\
+油气勘探开发“数字孪生”与数据挖掘技术\
+智能油气田工程建设中应用(三维可视化、VR、仿真、全数字化交付技术等)\
+智慧石油工程(钻井、随钻技术、自动控制技术、自动采集、远程测控等)\
+勘探开发大数据挖掘利用'
+f=remove_stop_words(f)
+create_word_cloud(f)

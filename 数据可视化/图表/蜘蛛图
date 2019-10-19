@@ -1,0 +1,24 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from matplotlib.font_manager import FontProperties
+
+#数据准备
+labels=np.array([u"推进","KDA",u"生存",u"团战",u"发育",u"输出"])  #u"里面含中文的字符串"
+stats=[83,61,95,67,76,88]
+
+#画图数据准备：角度、状态值
+angles=np.linspace(0,2*np.pi,len(labels),endpoint=False)    #创建以0为起点、2*pi为终点的等差数列，个数为len(labels),终点不包含在内
+stats=np.concatenate((stats,[stats[0]]))    #拼接两个数组
+angles=np.concatenate((angles,[angles[0]]))
+
+#用Matplotlib绘制蜘蛛图
+fig=plt.figure()    #创建空白对象(空白画板)
+ax=fig.add_subplot(111,polar=True)  #把画板划分为1行1列
+ax.plot(angles,stats,'bo-',linewidth=2) #连线,'bo-'：颜色、标记形状、线型
+ax.fill(angles,stats,facecolor='b',alpha=0.5)    #填充颜色和透明度
+
+#设置中文字体
+font=FontProperties(fname=r"C:\\Windows\\Fonts\\simhei.ttf",size=14)
+ax.set_thetagrids(angles*180/np.pi,labels,FontProperties=font)  #极坐标网格线显示
+plt.show()

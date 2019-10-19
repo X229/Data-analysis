@@ -1,0 +1,10 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#数据准备
+iris=sns.load_dataset('iris')
+iris.head(10)
+
+##用Seaborn绘制成对关系
+sns.pairplot(iris)
+plt.show()

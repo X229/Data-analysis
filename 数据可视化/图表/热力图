@@ -1,0 +1,11 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#数据准备
+flights=sns.load_dataset("flights")
+flights.head(10)
+data=flights.pivot('year','month','passengers')
+
+#用Seaborn绘制热力图
+sns.heatmap(data)
+plt.show()

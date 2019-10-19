@@ -1,0 +1,18 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import pandas as pd
+
+#数据准备
+#生成0-1之间的10*4维度数据
+data=np.random.normal(size=(10,4))
+labels=['A','B','C','D']
+
+#用Matplotlib绘制箱线图
+plt.boxplot(data,labels=labels)
+plt.show()
+
+#用Seaborn绘制箱线图
+df=pd.DataFrame(data,columns=labels)
+sns.boxplot(data=df)
+plt.show()
