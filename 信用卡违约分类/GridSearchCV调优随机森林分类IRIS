@@ -1,0 +1,21 @@
+#—*—coding:utf-8-*-
+#使用RandomForest对IRIS数据集进行分类
+#利用GridSearchCV寻找最优参数
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.datasets import load_iris
+import warnings
+
+#屏蔽警告
+warnings.filterwarnings("ignore")
+
+#构建随机森林分类器
+rf=RandomForestClassifier()
+parameters={'n_estimators':range(1,11)}
+iris=load_iris()
+#使用GridSearchCV寻找最优参数
+clf=GridSearchCV(estimator=rf,param_grid=parameters)
+#分类
+clf.fit(iris.data,iris.target)
+print("最优分数：%.4f"%clf.best_score_)
+print("最优参数：",clf.best_params_)
